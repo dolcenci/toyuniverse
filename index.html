@@ -552,6 +552,11 @@ audio::-webkit-media-controls-pause-button:hover {
 
         async function displayArtists() {
             const querySnapshot = await getDocs(collection(firestore, 'songs'));
+         //const querySnapshot = await getDocs(collection(firestore, 'products'));
+        // const querySnapshot = await getDocs(collection(firestore, 'songs'));
+
+
+         
             const artists = new Set();
 
             querySnapshot.forEach((doc) => {
@@ -572,7 +577,13 @@ audio::-webkit-media-controls-pause-button:hover {
         async function displaySongsByArtist(artist) {
             songGrid.innerHTML = ''; // Clear previous songs
             const querySnapshot = await getDocs(collection(firestore, 'songs'));
+//const querySnapshot = await getDocs(collection(firestore, 'products'));
+        // const querySnapshot = await getDocs(collection(firestore, 'products'));//const querySnapshot = await getDocs(collection(firestore, 'products'));
+        // const querySnapshot = await getDocs(collection(firestore, 'products'));
 
+
+
+         
             querySnapshot.forEach((doc) => {
                 const songData = doc.data();
                 if (songData.artist === artist) {
@@ -602,6 +613,15 @@ audio::-webkit-media-controls-pause-button:hover {
         async function displayAllSongs() {
             allSongsGrid.innerHTML = ''; // Clear previous songs
             const querySnapshot = await getDocs(collection(firestore, 'songs'));
+         //const querySnapshot = await getDocs(collection(firestore, 'products'));
+        // const querySnapshot = await getDocs(collection(firestore, 'products'));//const querySnapshot = await getDocs(collection(firestore, 'products'));
+        // const querySnapshot = await getDocs(collection(firestore, 'products'));
+
+
+
+
+
+         
 
             querySnapshot.forEach((doc) => {
                 const songData = doc.data();
@@ -631,6 +651,12 @@ audio::-webkit-media-controls-pause-button:hover {
              topSongsSidebar.innerHTML = ''; // Clear previous songs
             topSongsGrid.innerHTML = ''; // Clear previous songs
             const querySnapshot = await getDocs(collection(firestore, 'songs'));
+//const querySnapshot = await getDocs(collection(firestore, 'products'));
+        // const querySnapshot = await getDocs(collection(firestore, 'products'));//const querySnapshot = await getDocs(collection(firestore, 'products'));
+        // const querySnapshot = await getDocs(collection(firestore, 'products'));
+
+
+         
             const songsArray = [];
 
             querySnapshot.forEach((doc) => {
