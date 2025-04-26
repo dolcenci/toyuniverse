@@ -202,8 +202,8 @@
                     // Save song details to Firestore with user ID
                     //await addDoc(collection(firestore, 'product'), {
 
-                    //await addDoc(collection(firestore, 'product'), {
-                    await addDoc(collection(firestore, 'songs'), {
+                     await addDoc(collection(firestore, 'product'), {
+                    //await addDoc(collection(firestore, 'songs'), {
                         title: songTitle.value,
                         artist: artistName.value,
                         description: description.value,
@@ -239,8 +239,8 @@
 
         async function displaySongs() {
             songList.innerHTML = '<h2>Uploaded Songs</h2>'; // Clear existing songs
-            const querySnapshot = await getDocs(collection(firestore, 'songs'));
-             //const querySnapshot = await getDocs(collection(firestore, 'product'));
+            //const querySnapshot = await getDocs(collection(firestore, 'songs'));
+              const querySnapshot = await getDocs(collection(firestore, 'product'));
             querySnapshot.forEach((doc) => {
                 const songData = doc.data();
                 const songItem = document.createElement('div');
