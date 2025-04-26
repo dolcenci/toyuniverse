@@ -551,8 +551,8 @@ audio::-webkit-media-controls-pause-button:hover {
         const songsData = []; // Store songs data for searching
 
         async function displayArtists() {
-            const querySnapshot = await getDocs(collection(firestore, 'songs'));
-         //const querySnapshot = await getDocs(collection(firestore, 'products'));
+            //const querySnapshot = await getDocs(collection(firestore, 'songs'));
+          const querySnapshot = await getDocs(collection(firestore, 'products'));
         // const querySnapshot = await getDocs(collection(firestore, 'songs'));
 
 
@@ -576,8 +576,8 @@ audio::-webkit-media-controls-pause-button:hover {
 
         async function displaySongsByArtist(artist) {
             songGrid.innerHTML = ''; // Clear previous songs
-            const querySnapshot = await getDocs(collection(firestore, 'songs'));
-//const querySnapshot = await getDocs(collection(firestore, 'products'));
+            //const querySnapshot = await getDocs(collection(firestore, 'songs'));
+ const querySnapshot = await getDocs(collection(firestore, 'products'));
         // const querySnapshot = await getDocs(collection(firestore, 'products'));//const querySnapshot = await getDocs(collection(firestore, 'products'));
         // const querySnapshot = await getDocs(collection(firestore, 'products'));
 
@@ -612,8 +612,8 @@ audio::-webkit-media-controls-pause-button:hover {
 
         async function displayAllSongs() {
             allSongsGrid.innerHTML = ''; // Clear previous songs
-            const querySnapshot = await getDocs(collection(firestore, 'songs'));
-         //const querySnapshot = await getDocs(collection(firestore, 'products'));
+            //const querySnapshot = await getDocs(collection(firestore, 'songs'));
+          const querySnapshot = await getDocs(collection(firestore, 'products'));
         // const querySnapshot = await getDocs(collection(firestore, 'products'));//const querySnapshot = await getDocs(collection(firestore, 'products'));
         // const querySnapshot = await getDocs(collection(firestore, 'products'));
 
@@ -650,8 +650,8 @@ audio::-webkit-media-controls-pause-button:hover {
         async function displayTopSongs() {
              topSongsSidebar.innerHTML = ''; // Clear previous songs
             topSongsGrid.innerHTML = ''; // Clear previous songs
-            const querySnapshot = await getDocs(collection(firestore, 'songs'));
-//const querySnapshot = await getDocs(collection(firestore, 'products'));
+            //const querySnapshot = await getDocs(collection(firestore, 'songs'));
+ const querySnapshot = await getDocs(collection(firestore, 'products'));
         // const querySnapshot = await getDocs(collection(firestore, 'products'));//const querySnapshot = await getDocs(collection(firestore, 'products'));
         // const querySnapshot = await getDocs(collection(firestore, 'products'));
 
