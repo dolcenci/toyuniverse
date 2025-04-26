@@ -1,0 +1,266 @@
+<!DOCTYPE html>  
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Songs</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f3f7f9;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        input[type="file"],
+        input[type="text"],
+        textarea {
+            display: block;
+            margin: 10px 0;
+            width: 100%;
+        }
+        .upload-button {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .upload-button:hover {
+            background-color: #0056b3;
+        }
+        .song-list {
+            margin-top: 20px;
+        }
+        .download-linkpurple {
+            display: block;
+            padding: 10px 15px;
+            background-color: #9b59b6;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+        .error-message {
+            color: red;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload Songs</h1>
+        <div class="error-message" id="errorMessage" style="display: none;"></div>
+        <div class="form-group">
+            <input type="text" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <input type="text" id="songTitle" placeholder="Song Title" required>
+            <input type="text" id="artistName" placeholder="Artist Name" required>
+            <textarea id="description" placeholder="Song Description" rows="3" required></textarea>
+            <input type="file" id="audioUpload" accept="audio/*" required>
+            <input type="file" id="coverUpload" accept="image/*" required>
+            
+            <!-- New Section for Lyrics -->
+            <textarea id="lyrics" placeholder="Type lyrics here..." rows="5"></textarea>
+            <input type="file" id="lyricsUpload" accept=".txt" placeholder="Upload Lyrics File (txt format)">
+            
+            <button class="upload-button" id="uploadButton">Upload Song</button>
+            <li><a class="download-linkpurple" href="songplayer.html">Music Player</a></li>
+            <li><a class="download-linkpurple" href="index.html">Index</a></li>
+        </div>
+
+        <div class="song-list" id="songList">
+            <h2>Uploaded Songs</h2>
+            <!-- Uploaded songs will be displayed here -->
+        </div>
+    </div>
+
+    <!-- Import Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
+        import { getFirestore, collection, addDoc, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCCtmtSj_BMNllDVZWsIvF_oDo5gQYFmC8",
+            authDomain: "binge-play.firebaseapp.com",
+            databaseURL: "https://binge-play-default-rtdb.firebaseio.com",
+            projectId: "binge-play",
+            storageBucket: "binge-play.appspot.com",
+            messagingSenderId: "50709965408",
+            appId: "1:50709965408:web:bcb17a6ce85500f39df105"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const storage = getStorage(app);
+        const firestore = getFirestore(app);
+        const auth = getAuth(app);
+
+        const uploadButton = document.getElementById('uploadButton');
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+        const songTitle = document.getElementById('songTitle');
+        const artistName = document.getElementById('artistName');
+        const description = document.getElementById('description');
+        const audioUpload = document.getElementById('audioUpload');
+        const coverUpload = document.getElementById('coverUpload');
+        const lyrics = document.getElementById('lyrics');
+        const lyricsUpload = document.getElementById('lyricsUpload');
+        const songList = document.getElementById('songList');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Autofill email and password from local storage
+        email.value = localStorage.getItem('email') || '';
+        password.value = localStorage.getItem('password') || '';
+
+        uploadButton.addEventListener('click', async () => {
+            const audioFile = audioUpload.files[0];
+            const coverFile = coverUpload.files[0];
+            const lyricsFile = lyricsUpload.files[0];
+
+            if (!email.value || !password.value) {
+                errorMessage.textContent = 'Please enter your email and password.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            try {
+                // Sign in the user
+                const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
+                const userId = userCredential.user.uid; // Get user ID
+
+                if (audioFile && coverFile) {
+                    const audioRef = ref(storage, 'songs/' + audioFile.name);
+                    const coverRef = ref(storage, 'covers/' + coverFile.name);
+
+                    // Upload audio and cover files
+                    await Promise.all([
+                        uploadBytes(audioRef, audioFile),
+                        uploadBytes(coverRef, coverFile)
+                    ]);
+
+                    const audioURL = await getDownloadURL(audioRef);
+                    const coverURL = await getDownloadURL(coverRef);
+
+                    // Handle lyrics
+                    let lyricsContent = lyrics.value;
+                    if (lyricsFile) {
+                        const lyricsRef = ref(storage, 'lyrics/' + lyricsFile.name);
+                        await uploadBytes(lyricsRef, lyricsFile);
+                        lyricsContent = await getDownloadURL(lyricsRef); // Get URL for the uploaded file
+                    }
+
+                    // Save song details to Firestore with user ID
+                    await addDoc(collection(firestore, 'songs'), {
+                        title: songTitle.value,
+                        artist: artistName.value,
+                        description: description.value,
+                        audioURL: audioURL,
+                        coverURL: coverURL,
+                        lyrics: lyricsContent,
+                        userId: userId, // Store user ID with song details
+                        createdAt: new Date(),
+                        plays: 0,
+                        hearts: 0,
+                        isHearted: false
+                    });
+
+                    // Reset input fields
+                    songTitle.value = '';
+                    artistName.value = '';
+                    description.value = '';
+                    audioUpload.value = '';
+                    coverUpload.value = '';
+                    lyrics.value = '';
+                    lyricsUpload.value = '';
+                    email.value = '';
+                    password.value = '';
+                    displaySongs(); // Refresh song list
+                } else {
+                    alert('Please select both an audio file and a cover image to upload.');
+                }
+            } catch (error) {
+                errorMessage.textContent = error.message;
+                errorMessage.style.display = 'block';
+            }
+        });
+
+        async function displaySongs() {
+            songList.innerHTML = '<h2>Uploaded Songs</h2>'; // Clear existing songs
+            const querySnapshot = await getDocs(collection(firestore, 'songs'));
+            querySnapshot.forEach((doc) => {
+                const songData = doc.data();
+                const songItem = document.createElement('div');
+                songItem.className = 'song-item';
+
+                const coverImage = document.createElement('img');
+                coverImage.src = songData.coverURL;
+                coverImage.className = 'song-cover';
+
+                const titleElement = document.createElement('h3');
+                titleElement.textContent = songData.title;
+
+                const artistElement = document.createElement('p');
+                artistElement.textContent = `Artist: ${songData.artist}`;
+
+                const descriptionElement = document.createElement('p');
+                descriptionElement.textContent = `Description: ${songData.description}`;
+
+                const playsElement = document.createElement('p');
+                playsElement.textContent = `Plays: ${songData.plays}`;
+
+                const heartsElement = document.createElement('p');
+                heartsElement.textContent = `Hearts: ${songData.hearts}`;
+
+                const heartButton = document.createElement('button');
+                heartButton.textContent = songData.isHearted ? '❤️' : '🤍';
+                heartButton.onclick = async () => {
+                    songData.isHearted = !songData.isHearted;
+                    songData.hearts += songData.isHearted ? 1 : -1;
+
+                    // Update song document in Firestore
+                    await updateDoc(doc.ref, { hearts: songData.hearts, isHearted: songData.isHearted });
+                    heartsElement.textContent = `Hearts: ${songData.hearts}`;
+                    heartButton.textContent = songData.isHearted ? '❤️' : '🤍';
+                };
+
+                songItem.appendChild(coverImage);
+                songItem.appendChild(titleElement);
+                songItem.appendChild(artistElement);
+                songItem.appendChild(descriptionElement);
+                songItem.appendChild(playsElement);
+                songItem.appendChild(heartsElement);
+                songItem.appendChild(heartButton);
+
+                songList.appendChild(songItem);
+            });
+        }
+
+        // Load existing songs on page load
+        window.onload = displaySongs;
+    </script>
+</body>
+</html>

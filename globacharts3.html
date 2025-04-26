@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Music Player</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #282c34;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .music-list, .top-artists, .top-albums {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 columns */
+            gap: 10px; /* Gap between items */
+        }
+        .music-item, .artist-item, .album-item {
+            background-color: #444;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .music-item:hover, .artist-item:hover, .album-item:hover {
+            background-color: #555;
+        }
+        iframe {
+            width: 100%;
+            height: 100px; /* Adjust height for better visibility */
+            border: none;
+        }
+        .artist-image {
+            width: 100%;
+            border-radius: 5px;
+        }
+        .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>YouTube Music Player</h1>
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search for music..." />
+    </div>
+    
+    <div class="music-list" id="musicList"></div>
+    
+    <h2>Top Artists</h2>
+    <div class="top-artists" id="topArtists"></div>
+    
+    <h2>Top Albums</h2>
+    <div class="top-albums" id="topAlbums"></div>
+    
+    <iframe id="player" src="" allowfullscreen></iframe>
+
+    <script>
+        const API_KEY = 'AIzaSyBaC7khHTD35CIr-FhYdyQ6cm6-kMHrDQo'; // Replace with your YouTube API key
+        const musicList = document.getElementById('musicList');
+        const player = document.getElementById('player');
+        const searchInput = document.getElementById('searchInput');
+        const topArtists = document.getElementById('topArtists');
+        const topAlbums = document.getElementById('topAlbums');
+
+        async function fetchTopMusic() {
+            const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=12&type=video&order=viewCount&videoCategoryId=10&key=${API_KEY}`);
+            const data = await response.json();
+            displayMusic(data.items);
+        }
+
+        function displayMusic(musicItems) {
+            musicList.innerHTML = '';
+            musicItems.forEach(item => {
+                const musicItem = document.createElement('div');
+                musicItem.className = 'music-item';
+                const videoFrame = document.createElement('iframe');
+                videoFrame.src = `https://www.youtube.com/embed/${item.id.videoId}?enablejsapi=1`;
+                musicItem.appendChild(videoFrame);
+                musicList.appendChild(musicItem);
+            });
+        }
+
+        function playMusic(videoId) {
+            player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+        }
+
+        async function searchMusic(query) {
+            const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&type=video&q=${encodeURIComponent(query)}&key=${API_KEY}`);
+            const data = await response.json();
+            displayMusic(data.items);
+        }
+
+        searchInput.addEventListener('input', (event) => {
+            const query = event.target.value;
+            if (query) {
+                searchMusic(query);
+            } else {
+                fetchTopMusic(); // Fetch top music if search is cleared
+            }
+        });
+
+        async function fetchTopArtists() {
+            const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=12&type=channel&q=music&key=${API_KEY}`);
+            const data = await response.json();
+            displayTopArtists(data.items);
+        }
+
+        function displayTopArtists(artists) {
+            topArtists.innerHTML = '';
+            artists.forEach(artist => {
+                const artistItem = document.createElement('div');
+                artistItem.className = 'artist-item';
+                const artistImage = document.createElement('img');
+                artistImage.src = artist.snippet.thumbnails.default.url; // Use artist image thumbnail
+                artistImage.className = 'artist-image';
+                artistItem.appendChild(artistImage);
+                artistItem.onclick = () => playArtistMusic(artist.id.channelId);
+                topArtists.appendChild(artistItem);
+            });
+        }
+
+        async function playArtistMusic(artistId) {
+            const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${artistId}&maxResults=5&key=${API_KEY}`);
+            const data = await response.json();
+            displayMusic(data.items);
+        }
+
+        async function fetchTopAlbums() {
+            const response = await fetch(`https://www.googleapis.com/youtube/v3/playlists?part=snippet&maxResults=12&channelId=YOUR_CHANNEL_ID&key=${API_KEY}`); // Replace with a valid channel ID
+            const data = await response.json();
+            displayTopAlbums(data.items);
+        }
+
+        function displayTopAlbums(albums) {
+            topAlbums.innerHTML = '';
+            albums.forEach(album => {
+                const albumItem = document.createElement('div');
+                albumItem.className = 'album-item';
+                const albumImage = document.createElement('img');
+                albumImage.src = album.snippet.thumbnails.default.url; // Use album image thumbnail
+                albumImage.className = 'artist-image'; // Use same class for styling
+                albumItem.appendChild(albumImage);
+                albumItem.onclick = () => playAlbumMusic(album.id);
+                topAlbums.appendChild(albumItem);
+            });
+        }
+
+        async function playAlbumMusic(albumId) {
+            const response = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${albumId}&maxResults=5&key=${API_KEY}`);
+            const data = await response.json();
+            displayMusic(data.items);
+        }
+
+        // Fetch data on load
+        window.onload = async () => {
+            fetchTopMusic();
+            fetchTopArtists();
+            fetchTopAlbums();
+        };
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,715 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Artists and Songs</title>
+    <style>
+     
+
+      body {
+    display: flex;           /* Use Flexbox for the overall layout */
+    margin: 0;               /* Remove default body margin */
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #111727; /* Background color for better visual separation */
+}
+
+ 
+       
+
+
+ 
+.container {
+    flex: 1;                 /* Take up the remaining space */
+    padding: 20px;           /* Add padding for main content */
+    background-color: white; /* Background for the main content */
+}
+      
+
+h1, h2, h3 {
+    text-align: center;
+    margin-bottom: 10px;
+    color: white;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #FF6600; /* Change nav bar to orange */
+    border-radius: 8px;
+}
+
+.nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+}
+
+.search-bar {
+    flex: 1;
+    display: flex;
+    position: relative;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+}
+
+  .banner {
+            height: 300px; /* Set the banner height */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #FF6600; /* Solid orange background for the majority */
+            padding: 20px;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden; /* Prevent the images from overflowing the banner */
+        }
+
+        /* Image container for the two circular images */
+        .image-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 0; /* Images will be behind the text and button */
+        }
+
+        /* Circular image styles */
+        .circle-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+       
+        /* First circular image (top-left) */
+        .circle-image-1 {
+            background-image: url('boombox-7435237_640.webp');
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+        /* Second circular image (bottom-right) */
+        .circle-image-2 {
+            background-image: url('music 1.jpg');
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+        }
+
+        /* Hover effect for images */
+        .circle-image:hover {
+            transform: scale(1.05);
+        }
+
+        /* Banner text and button container */
+        .banner-text-container {
+            position: absolute;
+            z-index: 1;
+            color: white;
+            text-align: center;
+            font-size: 30px;
+            font-weight: bold;
+            max-width: 80%;
+            padding: 20px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Banner text */
+        .banner-text {
+            margin-bottom: 20px;
+        }
+
+        /* Banner button styling */
+        .banner-button {    
+            background-color: white;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .banner-button:hover {
+            background-color: #FF6600;
+            color: white;
+        }
+        
+
+.artist-list, .radio-station-list, .song-list, .radio-player {
+    background-color: #111727;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.artist-item, .radio-station-item {
+    cursor: pointer;
+    margin: 5px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    color: white;
+}
+
+.artist-item:hover, .radio-station-item:hover {
+    background-color: #e0e0e0;
+    color: black;
+}
+
+.song-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.song-grid-item {
+    text-align: center;
+    background-color: #1e1e2f;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+.song-grid-item:hover {
+    background-color: #333;
+}
+
+.song-grid-cover {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.description {
+    margin: 15px 0;
+    color: white;
+}
+
+/*.listen-button {
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 15px;
+}*/
+
+        .listen-button {
+    display: block;           /* Makes the button a block-level element */
+    margin: 20px auto;        /* Centers the button horizontally with auto margins */
+    padding: 10px 20px;       /* Adjusts the button size (optional) */
+    background-color: white;  /* Button background */
+    color: black;             /* Button text color */
+    border: none;             /* Removes the border */
+    border-radius: 5px;       /* Rounded corners */
+    cursor: pointer;         /* Shows a pointer on hover */
+    font-size: 16px;          /* Button font size */
+    transition: background-color 0.3s;
+}
+
+.listen-button:hover {
+    background-color: #FF6600; /* Changes background on hover */
+    color: white;              /* Changes text color on hover */
+}
+
+/* New section for 2 radio images */
+        .radio-images-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .radio-image {
+            width: 48%;  /* Adjusted width */
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: opacity 0.3s ease;
+            transform: scale(0.8); /* Reduced size to 80% of original */
+        }
+
+        .radio-image:hover {
+            opacity: 1;
+        }
+ 
+.lyrics {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #00ff00;
+    border-radius: 5px;
+    white-space: pre-wrap;
+}
+
+  
+
+
+
+        /* Enhanced styling for the audio player container */
+.radio-player {
+    background: linear-gradient(135deg, #FF6600, #FF3366); /* Apply the same gradient as the audio controls */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* More prominent shadow */
+    text-align: center;
+    margin-bottom: 30px;
+    max-width: 600px;
+    margin: 0 auto; /* Center the player horizontally */
+    transition: all 0.3s ease-in-out;
+}
+
+.radio-player:hover {
+    transform: scale(1.02); /* Slight zoom effect on hover */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6); /* Increased shadow on hover */
+}
+
+.radio-player h3 {
+    font-size: 26px;
+    color: white; /* Keep text white for contrast on the gradient */
+    margin-bottom: 15px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Styling the audio element itself */
+audio {
+    width: 100%;
+    max-width: 600px; /* Keep the audio player responsive */
+    background: linear-gradient(135deg, #FF6600, #FF3366); /* Gradient background for the audio player */
+    border: none;
+    border-radius: 10px;
+    padding: 15px;
+    outline: none;
+    margin: 0 auto;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    color: white; /* Ensures text is readable */
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+audio:hover {
+    background: linear-gradient(135deg, #FF3366, #FF6600); /* Reverse the gradient on hover */
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4); /* Deeper shadow on hover */
+}
+
+/* Customize the play/pause button */
+audio::-webkit-media-controls-play-button {
+    background-color: #FF6600; /* Bright orange color for the play button */
+    border-radius: 50%;
+    padding: 10px;
+    border: 2px solid #fff; /* White border for contrast */
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+audio::-webkit-media-controls-play-button:hover {
+    background-color: #FF3366; /* Slightly darker orange when hovering */
+    transform: scale(1.1); /* Slightly increase the size of the play button */
+}
+
+/* Customize the volume slider */
+audio::-webkit-media-controls-volume-slider {
+    background-color: #1e1e2f; /* Darker background for the slider */
+    border-radius: 5px;
+    height: 5px;
+}
+
+audio::-webkit-media-controls-volume-slider:hover {
+    background-color: #FF6600; /* Highlight the slider when hovered */
+}
+
+/* Customize other media controls */
+audio::-webkit-media-controls {
+    background-color: #222; /* Darker background for the controls */
+    border-radius: 10px;
+}
+
+/* Style the seek bar and other controls */
+audio::-webkit-media-controls-current-time-display,
+audio::-webkit-media-controls-time-remaining-display {
+    color: #FF6600; /* Bright orange for the current time and time remaining */
+    font-weight: bold;
+}
+
+audio::-webkit-media-controls-seekbar {
+    background-color: #333; /* Dark background for seek bar */
+    border-radius: 5px;
+    height: 10px;
+}
+
+audio::-webkit-media-controls-seekbar:hover {
+    background-color: #FF6600; /* Highlight seek bar when hovered */
+}
+
+/* Style the pause button */
+audio::-webkit-media-controls-pause-button {
+    background-color: #FF3366; /* Darker pink color for the pause button */
+    border-radius: 50%;
+    padding: 10px;
+    transition: background-color 0.3s ease;
+}
+
+audio::-webkit-media-controls-pause-button:hover {
+    background-color: #FF6600; /* Switch back to bright orange on hover */
+}
+
+
+ 
+       
+ 
+
+      .sidebar {
+    width: 250px;            /* Fixed width for the sidebar */
+    height: 100vh;           /* Full viewport height */
+    background-color: #333;  /* Dark background for the sidebar */
+    color: white;            /* Text color */
+    padding: 20px;           /* Add padding inside the sidebar */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    overflow-y: auto;        /* Allow scrolling if the sidebar content overflows */
+}
+
+/* Container for the vinyl disc */
+.vinyl-container {
+    position: absolute;   /* Position it relative to the sidebar */
+    bottom: 20px;         /* Align it to the bottom of the sidebar */
+    left: 50%;            /* Position it horizontally in the center of the sidebar */
+    transform: translateX(-50%);  /* Adjust for exact centering */
+    width: 200px;         /* Set a fixed width for the vinyl */
+    padding: 10px 0;      /* Add a little space for the vinyl to be visible */
+    z-index: 2;           /* Make sure the vinyl is above other content */
+}
+
+/* Styling the vinyl disc image */
+.vinyl-image {
+    width: 100%;           /* Make the vinyl disc fill the container */
+    height: auto;         /* Keep aspect ratio intact */
+    animation: spin 10s linear infinite;  /* Spin the vinyl infinitely */
+}
+
+/* Keyframes for spinning animation */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);  /* Start from the initial rotation */
+    }
+    to {
+        transform: rotate(360deg); /* Complete one full rotation */
+    }
+}
+
+
+
+ 
+
+
+        
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Sidebar</h2>
+        <div id="topSongsSidebar"></div>
+        <p>Navigation or other content can go here.</p>
+
+                <div class="vinyl-container">
+    <img src="silhouette-5477317_640.webp" alt="Vinyl Disc" class="vinyl-image">
+</div>
+    </div>
+    <div class="container">
+        <div class="nav">
+            <div>
+                <a href="#">Home</a>
+                <a href="#">Podcasts</a>
+                <a href="#">Internet Radio</a>
+                <a href="globalcharts2.html">Global Charts 2</a>
+                <a href="globalcharts.html">Global Charts</a>
+                <a href="profile.html">Profile</a>
+                <a href="signup.html">Sign Up</a>
+                <a href="songupload.html">Song Upload</a>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search artists or songs..." />
+            </div>
+        </div>
+
+      <!-- Banner Section -->
+        <div class="banner">
+            <div class="image-container">
+                <div class="circle-image circle-image-1"></div>
+                <div class="circle-image circle-image-2"></div>
+            </div>
+            <div class="banner-text-container">
+                <div class="banner-text">
+                    Welcome To binger, Your Number One Music Streaming site . 
+                    Weve built you an outstanding music streaming platform that allows you to 
+                    Discover New Music, Artists, and More!
+                </div>
+                <button class="banner-button">Explore Now</button>
+            </div>
+        </div>
+        
+        <h1>Artists</h1>
+        <div class="artist-list" id="artistList"></div>
+        
+        <h2>Songs Collection</h2>
+        <div class="song-grid" id="songGrid"></div> <!-- Songs by selected artist -->
+
+        <h2>All Songs</h2>
+        <div class="song-grid" id="allSongsGrid"></div> <!-- New section for all songs -->
+
+        <h2>Top Songs</h2>
+        <div class="song-grid" id="topSongsGrid"></div> <!-- New section for top songs -->
+
+        <h2>RADIO</h2>
+         
+         
+        <div class="radio-station-list" id="radioStationList"></div>
+        
+        <div class="description">
+            Don't know what to play? Why not try the number one internet radio station, Radio Paradise, and let it do the playing for you.
+        </div>
+
+        <div class="radio-images-container">
+            <img src="boy-2861417_640.jpg" alt="Radio Image 1" class="radio-image">
+            <img src="radio-5045924_640.jpg" alt="Radio Image 2" class="radio-image">
+        </div>
+        
+        <button class="listen-button" id="listenButton">Listen to Radio</button>
+
+        <div class="radio-player" id="radioPlayer">
+            <h3>Now Playing</h3>
+            <audio id="radioAudio" controls>
+                <source id="radioSource" src="" type="audio/mpeg">
+                Your browser does not support the audio tag.
+            </audio>
+        </div>
+
+        <!-- Section for displaying lyrics -->
+        <div class="lyrics" id="lyricsDisplay"></div>
+         
+
+    </div>
+
+    <!-- Import Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCCtmtSj_BMNllDVZWsIvF_oDo5gQYFmC8",
+            authDomain: "binge-play.firebaseapp.com",
+            databaseURL: "https://binge-play-default-rtdb.firebaseio.com",
+            projectId: "binge-play",
+            storageBucket: "binge-play.appspot.com",
+            messagingSenderId: "50709965408",
+            appId: "1:50709965408:web:bcb17a6ce85500f39df105"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const firestore = getFirestore(app);
+
+        const artistList = document.getElementById('artistList');
+        const songGrid = document.getElementById('songGrid');
+        const topSongsSidebar = document.getElementById('topSongsSidebar');
+        const allSongsGrid = document.getElementById('allSongsGrid');
+        const topSongsGrid = document.getElementById('topSongsGrid'); // New grid for top songs
+        const radioAudio = document.getElementById('radioAudio');
+        const radioSource = document.getElementById('radioSource');
+        const listenButton = document.getElementById('listenButton');
+        const lyricsDisplay = document.getElementById('lyricsDisplay');
+
+        const songsData = []; // Store songs data for searching
+
+        async function displayArtists() {
+            const querySnapshot = await getDocs(collection(firestore, 'songs'));
+            const artists = new Set();
+
+            querySnapshot.forEach((doc) => {
+                const songData = doc.data();
+                artists.add(songData.artist);
+                songsData.push(songData); // Store song data
+            });
+
+            artists.forEach(artist => {
+                const artistItem = document.createElement('div');
+                artistItem.className = 'artist-item';
+                artistItem.textContent = artist;
+                artistItem.addEventListener('click', () => displaySongsByArtist(artist));
+                artistList.appendChild(artistItem);
+            });
+        }
+
+        async function displaySongsByArtist(artist) {
+            songGrid.innerHTML = ''; // Clear previous songs
+            const querySnapshot = await getDocs(collection(firestore, 'songs'));
+
+            querySnapshot.forEach((doc) => {
+                const songData = doc.data();
+                if (songData.artist === artist) {
+                    const songItem = document.createElement('div');
+                    songItem.className = 'song-grid-item';
+
+                    const coverImage = document.createElement('img');
+                    coverImage.src = songData.coverURL;
+                    coverImage.className = 'song-grid-cover';
+
+                    const titleElement = document.createElement('h3');
+                    titleElement.textContent = songData.title;
+
+                    const descriptionElement = document.createElement('p');
+                    descriptionElement.textContent = songData.description;
+
+                    songItem.appendChild(coverImage);
+                    songItem.appendChild(titleElement);
+                    songItem.appendChild(descriptionElement);
+
+                    songItem.onclick = () => playSong(songData); // Pass song data to playSong
+                    songGrid.appendChild(songItem);
+                }
+            });
+        }
+
+        async function displayAllSongs() {
+            allSongsGrid.innerHTML = ''; // Clear previous songs
+            const querySnapshot = await getDocs(collection(firestore, 'songs'));
+
+            querySnapshot.forEach((doc) => {
+                const songData = doc.data();
+                const songItem = document.createElement('div');
+                songItem.className = 'song-grid-item';
+
+                const coverImage = document.createElement('img');
+                coverImage.src = songData.coverURL;
+                coverImage.className = 'song-grid-cover';
+
+                const titleElement = document.createElement('h3');
+                titleElement.textContent = songData.title;
+
+                const artistElement = document.createElement('p');
+                artistElement.textContent = songData.artist;
+
+                songItem.appendChild(coverImage);
+                songItem.appendChild(titleElement);
+                songItem.appendChild(artistElement);
+
+                songItem.onclick = () => playSong(songData); // Pass song data to playSong
+                allSongsGrid.appendChild(songItem);
+            });
+        }
+
+        async function displayTopSongs() {
+             topSongsSidebar.innerHTML = ''; // Clear previous songs
+            topSongsGrid.innerHTML = ''; // Clear previous songs
+            const querySnapshot = await getDocs(collection(firestore, 'songs'));
+            const songsArray = [];
+
+            querySnapshot.forEach((doc) => {
+                const songData = doc.data();
+                songsArray.push(songData);
+            });
+
+            // Sort songs by plays in descending order
+            songsArray.sort((a, b) => b.plays - a.plays);
+
+            // Display top songs
+            songsArray.forEach((songData) => {
+                const songItem = document.createElement('div');
+                songItem.className = 'song-grid-item';
+
+                const coverImage = document.createElement('img');
+                coverImage.src = songData.coverURL;
+                coverImage.className = 'song-grid-cover';
+
+                const titleElement = document.createElement('h3');
+                titleElement.textContent = songData.title;
+
+                const playsElement = document.createElement('p');
+                playsElement.textContent = `Plays: ${songData.plays}`;
+
+                songItem.appendChild(coverImage);
+                songItem.appendChild(titleElement);
+                songItem.appendChild(playsElement);
+
+                songItem.onclick = () => playSong(songData); // Pass song data to playSong
+                topSongsGrid.appendChild(songItem);
+                // topSongsSidebar.appendChild(songItem);
+            });
+
+
+            /*my stuff*/
+const songsArray2 = [];
+  querySnapshot.forEach((doc) => {
+                const songData = doc.data();
+                songsArray2.push(songData);
+            });  
+
+   songsArray2.sort((a, b) => b.plays - a.plays); // Sort songs by plays
+
+            songsArray2.forEach((songData) => {
+                const songItem2 = document.createElement('div');
+                songItem2.className = 'song-sidebar-item';
+                songItem2.textContent = songData.title;
+
+                songItem2.onclick = () => {
+                    playSong(songData); // Play song on sidebar click
+                };
+
+                topSongsSidebar.appendChild(songItem2);
+            });  
+
+            /*mystuff end*/
+
+
+            
+        }
+
+        function playSong(songData) {
+            radioSource.src = songData.audioURL;
+            radioAudio.load();
+            radioAudio.play();
+
+            // Display lyrics if available
+            lyricsDisplay.textContent = songData.lyrics || "Lyrics not available.";
+        }
+
+        // Load artists and songs on page load
+        window.onload = async () => {
+            await displayArtists();
+            await displayAllSongs(); // Automatically display all songs
+            await displayTopSongs(); // Automatically display top songs
+        };
+
+        // Listen to Radio Paradise
+        listenButton.addEventListener('click', () => {
+            const radioParadiseUrl = "http://stream.radioparadise.com/aac-320";
+            radioSource.src = radioParadiseUrl;
+            radioAudio.load();
+            radioAudio.play();
+        });
+    </script>
+</body>
+</html>

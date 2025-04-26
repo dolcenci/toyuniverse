@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard | Music Streaming</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(to bottom, #1a1a1a, #2d2d2d);
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .users-table th,
+        .users-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .users-table th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .users-table tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .chart-container {
+            margin-top: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 2em;
+        }
+
+        .highlight {
+            color: #007bff;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <h1>User <span class="highlight">Dashboard</span></h1>
+            <div class="search-bar">
+                <input type="text" placeholder="Search users..." style="padding: 8px; border-radius: 20px; border: none; background: rgba(255,255,255,0.1); color: white;">
+            </div>
+        </div>
+
+        <div class="stats-cards">
+            <div class="stat-card">
+                <h3>Total Users</h3>
+                <p class="highlight" id="total-users">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Active Today</h3>
+                <p class="highlight">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>New This Week</h3>
+                <p class="highlight">0</p>
+            </div>
+        </div>
+
+        <table class="users-table">
+            <thead>
+                <tr>
+                    <th>Profile</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Location</th>
+                    <th>Date of Birth</th>
+                    <th>Member Since</th>
+                </tr>
+            </thead>
+            <tbody id="users-table-body">
+                <!-- Users will be populated here -->
+            </tbody>
+        </table>
+
+        <div class="chart-container">
+            <canvas id="user-demographics-chart"></canvas>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCCtmtSj_BMNllDVZWsIvF_oDo5gQYFmC8",
+            authDomain: "binge-play.firebaseapp.com",
+            projectId: "binge-play",
+            storageBucket: "binge-play.appspot.com",
+            messagingSenderId: "50709965408",
+            appId: "1:50709965408:web:bcb17a6ce85500f39df105"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function fetchUsers() {
+            const querySnapshot = await getDocs(collection(db, "users"));
+            const users = [];
+            
+            querySnapshot.forEach((doc) => {
+                users.push({ id: doc.id, ...doc.data() });
+            });
+
+            // Update total users count
+            document.getElementById('total-users').textContent = users.length;
+
+            // Populate table
+            const tbody = document.getElementById('users-table-body');
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td><img src="${user.photoURL || 'placeholder.jpg'}" class="user-avatar" alt="Profile"></td>
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td>${user.address || 'N/A'}</td>
+                    <td>${user.dob || 'N/A'}</td>
+                    <td>${new Date(user?.timestamp?.toDate()).toLocaleDateString() || 'N/A'}</td>
+                </tr>
+            `).join('');
+
+            // Initialize charts (you'll need to include Chart.js)
+            // initializeCharts(users);
+        }
+
+        // Initial fetch
+        fetchUsers();
+
+        // Real-time updates listener
+        // You can add real-time updates using onSnapshot if needed
+    </script>
+</body>
+</html>

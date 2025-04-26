@@ -1,0 +1,270 @@
+ <!DOCTYPE html>  
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Artists and Songs</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #111727;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+
+        .container {
+            width: 75%;
+            max-width: 800px;
+            background-color: #111727;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #FF6600;
+            border-radius: 8px;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+
+        .search-bar {
+            flex: 1;
+            display: flex;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .banner {
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #FF6600;
+            padding: 20px;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .banner-text-container {
+            position: absolute;
+            z-index: 1;
+            color: white;
+            text-align: center;
+            font-size: 30px;
+            font-weight: bold;
+            max-width: 80%;
+            padding: 20px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        .sidebar {
+            width: 25%;
+            height: 100vh;
+            background-color: #00ff00;
+            color: #fff;
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        .vinyl-container {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            padding: 10px 0;
+            z-index: 2;
+        }
+
+        .vinyl-image {
+            width: 100%;
+            height: auto;
+            animation: spin 10s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .song-sidebar-item {
+            cursor: pointer;
+            margin: 5px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            color: white;
+        }
+
+        .song-sidebar-item:hover {
+            background-color: #e0e0e0;
+            color: black;
+        }
+
+        .radio-player {
+            background: linear-gradient(135deg, #FF6600, #FF3366);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        audio {
+            width: 100%;
+            max-width: 600px;
+            background: linear-gradient(135deg, #FF6600, #FF3366);
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            outline: none;
+            margin: 0 auto;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Top Songs</h2>
+        <div id="topSongsSidebar"></div>
+        <div class="vinyl-container">
+            <img src="silhouette-5477317_640.webp" alt="Vinyl Disc" class="vinyl-image">
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="nav">
+            <div>
+                <a href="#">Home</a>
+                <a href="#">Podcasts</a>
+                <a href="#">Internet Radio</a>
+                <a href="globalcharts2.html">Global Charts 2</a>
+                <a href="globalcharts.html">Global Charts</a>
+                <a href="profile.html">Profile</a>
+                <a href="signup.html">Sign Up</a>
+                <a href="songupload.html">Song Upload</a>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search artists or songs..." />
+            </div>
+        </div>
+
+        <h1>Artists</h1>
+        <div class="artist-list" id="artistList"></div>
+
+        <h2>Songs Collection</h2>
+        <div class="song-grid" id="songGrid"></div>
+
+        <h2>All Songs</h2>
+        <div class="song-grid" id="allSongsGrid"></div>
+
+        <h2>Top Songs</h2>
+        <div class="song-grid" id="topSongsGrid"></div>
+
+        <h2>RADIO</h2>
+        <div class="radio-station-list" id="radioStationList"></div>
+
+        <button class="listen-button" id="listenButton">Listen to Radio</button>
+
+        <div class="radio-player" id="radioPlayer">
+            <h3>Now Playing</h3>
+            <audio id="radioAudio" controls>
+                <source id="radioSource" src="" type="audio/mpeg">
+                Your browser does not support the audio tag.
+            </audio>
+        </div>
+
+        <div class="lyrics" id="lyricsDisplay"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCCtmtSj_BMNllDVZWsIvF_oDo5gQYFmC8",
+            authDomain: "binge-play.firebaseapp.com",
+            databaseURL: "https://binge-play-default-rtdb.firebaseio.com",
+            projectId: "binge-play",
+            storageBucket: "binge-play.appspot.com",
+            messagingSenderId: "50709965408",
+            appId: "1:50709965408:web:bcb17a6ce85500f39df105"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const firestore = getFirestore(app);
+
+        const topSongsSidebar = document.getElementById('topSongsSidebar');
+        const radioAudio = document.getElementById('radioAudio');
+        const radioSource = document.getElementById('radioSource');
+
+        async function displayTopSongs() {
+            topSongsSidebar.innerHTML = ''; // Clear previous songs
+            const querySnapshot = await getDocs(collection(firestore, 'songs'));
+            const songsArray = [];
+
+            querySnapshot.forEach((doc) => {
+                const songData = doc.data();
+                songsArray.push(songData);
+            });
+
+            songsArray.sort((a, b) => b.plays - a.plays); // Sort songs by plays
+
+            songsArray.forEach((songData) => {
+                const songItem = document.createElement('div');
+                songItem.className = 'song-sidebar-item';
+                songItem.textContent = songData.title;
+
+                songItem.onclick = () => {
+                    playSong(songData); // Play song on sidebar click
+                };
+
+                topSongsSidebar.appendChild(songItem);
+            });
+        }
+
+        function playSong(songData) {
+            radioSource.src = songData.audioURL;
+            radioAudio.load();
+            radioAudio.play();
+        }
+
+        displayTopSongs();
+    </script>
+</body>
+</html>

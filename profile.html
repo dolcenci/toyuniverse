@@ -1,0 +1,407 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f4f8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1f2d3d;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 900px;
+            width: 100%;
+            margin: 20px;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+        .profile-header {
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .profile-header img {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border: 5px solid #007bff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-right: 20px;
+        }
+        .profile-header h1 {
+            margin: 0;
+            font-size: 32px;
+            color: #1f2d3d;
+            font-weight: 600;
+        }
+        .profile-header p {
+            margin: 5px 0;
+            color: #4a4a4a;
+            font-size: 18px;
+        }
+        .profile-details {
+            margin-bottom: 30px;
+        }
+        .profile-details .profile-item {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+        .profile-details .profile-item:last-child {
+            margin-bottom: 0;
+        }
+        .profile-details .profile-item label {
+            display: inline-block;
+            width: 150px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .profile-details .profile-item p {
+            margin: 0;
+            color: #343a40;
+            font-size: 18px;
+            flex-grow: 1;
+            background-color: #ffffff;
+            border-radius: 5px;
+            padding: 10px;
+            border: 1px solid #ced4da;
+        }
+        .profile-details .profile-item:nth-child(even) {
+            background: linear-gradient(135deg, #e9ecef, #f8f9fa);
+        }
+        .profile-actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .profile-actions button {
+            border: none;
+            border-radius: 8px;
+            padding: 14px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .logout-button {
+            background-color: #ff4c4c;
+            color: #ffffff;
+        }
+        .logout-button:hover {
+            background-color: #d43f3f;
+        }
+        .home-button {
+            background-color: #28a745;
+            color: #ffffff;
+        }
+        .home-button:hover {
+            background-color: #218838;
+        }
+        .edit-profile-button {
+            background-color: #ffc107;
+            color: #ffffff;
+        }
+        .edit-profile-button:hover {
+            background-color: #e0a800;
+        }
+        .intro-section {
+            margin-bottom: 30px;
+        }
+        .intro-section h2 {
+            font-size: 24px;
+            color: #1f2d3d;
+            margin-bottom: 12px;
+        }
+        .intro-section p {
+            font-size: 16px;
+            color: #6c757d;
+            line-height: 1.6;
+        }
+        .divider {
+            border-top: 2px solid #e0e0e0;
+            margin: 20px 0;
+        }
+        .edit-profile {
+            margin-top: 20px;
+            display: none; /* Initially hidden */
+            padding-top: 20px;
+        }
+        .edit-profile h2 {
+            font-size: 24px;
+            color: #1f2d3d;
+            margin-bottom: 12px;
+        }
+        .edit-profile form {
+            display: flex;
+            flex-direction: column;
+        }
+        .edit-profile .form-group {
+            margin-bottom: 15px;
+        }
+        .edit-profile input[type="text"],
+        .edit-profile input[type="email"],
+        .edit-profile input[type="date"],
+        .edit-profile textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            font-size: 16px;
+        }
+        .edit-profile .form-group input[type="file"] {
+            padding: 0;
+        }
+        .edit-profile button {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .edit-profile button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">ABC EDUCATION</div>
+    <div class="container">
+        <div class="profile-header">
+            <img id="profileImage" src="default-profile.png" alt="Profile Photo">
+            <div>
+                <h1 id="profileName">Loading...</h1>
+                <p id="profileAddress">Loading...</p>
+                <p id="profileDob">Loading...</p>
+                <p id="profileBio">Loading...</p>
+            </div>
+        </div>
+
+        <div class="intro-section">
+            <h2>Welcome to Your Profile</h2>
+            <p>Here you can view and manage your personal details. Make sure your information is up to date to fully benefit from our online courses. Update your profile as needed and check out the various courses and resources available to enhance your learning experience.</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="profile-details">
+            <div class="profile-item">
+                <label for="profileNameDetail">Name:</label>
+                <p id="profileNameDetail">Loading...</p>
+            </div>
+            <div class="profile-item">
+                <label for="profileAddressDetail">Address:</label>
+                <p id="profileAddressDetail">Loading...</p>
+            </div>
+            <div class="profile-item">
+                <label for="profileDobDetail">Date of Birth:</label>
+                <p id="profileDobDetail">Loading...</p>
+            </div>
+            <div class="profile-item">
+                <label for="profileBioDetail">Bio:</label>
+                <p id="profileBioDetail">Loading...</p>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="profile-actions">
+            <button class="logout-button" id="logoutButton">Logout</button>
+            <button class="home-button" id="homeButton">Home</button>
+            <button class="edit-profile-button" id="editProfileButton">Edit Profile</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="edit-profile" id="editProfileSection">
+            <h2>Edit Your Profile</h2>
+            <form id="editProfileForm">
+                <div class="form-group">
+                    <label for="newProfileImage">Change Profile Photo:</label>
+                    <input type="file" id="newProfileImage" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="editName">Name:</label>
+                    <input type="text" id="editName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editAddress">Address:</label>
+                    <input type="text" id="editAddress" required>
+                </div>
+                <div class="form-group">
+                    <label for="editDob">Date of Birth:</label>
+                    <input type="date" id="editDob" required>
+                </div>
+                <div class="form-group">
+                    <label for="editBio">Bio:</label>
+                    <textarea id="editBio" rows="4" required></textarea>
+                </div>
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Import Firebase SDKs and JavaScript -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-analytics.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+           apiKey: "AIzaSyCCtmtSj_BMNllDVZWsIvF_oDo5gQYFmC8",
+    authDomain: "binge-play.firebaseapp.com",
+    databaseURL: "https://binge-play-default-rtdb.firebaseio.com",
+    projectId: "binge-play",
+    storageBucket: "binge-play.appspot.com",
+    messagingSenderId: "50709965408",
+    appId: "1:50709965408:web:bcb17a6ce85500f39df105"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const firestore = getFirestore(app);
+        const storage = getStorage(app);
+
+        // Function to fetch and display user data
+        async function fetchUserData(userId) {
+            const docRef = doc(firestore, 'users', userId);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const userData = docSnap.data();
+                document.getElementById('profileNameDetail').textContent = userData.name;
+                document.getElementById('profileAddressDetail').textContent = userData.address;
+                document.getElementById('profileDobDetail').textContent = userData.dob;
+                document.getElementById('profileBioDetail').textContent = userData.bio;
+
+                document.getElementById('profileName').textContent = userData.name;
+                document.getElementById('profileAddress').textContent = userData.address;
+                document.getElementById('profileDob').textContent = userData.dob;
+                document.getElementById('profileBio').textContent = userData.bio;
+
+                if (userData.photoURL) {
+                    document.getElementById('profileImage').src = userData.photoURL;
+                } else {
+                    document.getElementById('profileImage').src = 'default-profile.png';
+                }
+
+                document.getElementById('editName').value = userData.name;
+                document.getElementById('editAddress').value = userData.address;
+                document.getElementById('editDob').value = userData.dob;
+                document.getElementById('editBio').value = userData.bio;
+            } else {
+                alert("No user data found.");
+            }
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                fetchUserData(user.uid);
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+
+        document.getElementById('logoutButton').addEventListener('click', () => {
+            signOut(auth).then(() => {
+                window.location.href = 'index.html';
+            }).catch((error) => {
+                alert(error.message);
+            });
+        });
+
+        document.getElementById('homeButton').addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+
+        document.getElementById('editProfileButton').addEventListener('click', () => {
+            const profileSection = document.querySelector('.profile-header');
+            const editProfileSection = document.getElementById('editProfileSection');
+
+            if (editProfileSection.style.display === 'none' || editProfileSection.style.display === '') {
+                profileSection.style.display = 'none';
+                editProfileSection.style.display = 'block';
+            } else {
+                profileSection.style.display = 'block';
+                editProfileSection.style.display = 'none';
+            }
+        });
+
+        document.getElementById('editProfileForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const user = auth.currentUser;
+            if (!user) {
+                alert("User not authenticated.");
+                return;
+            }
+
+            const newName = document.getElementById('editName').value;
+            const newAddress = document.getElementById('editAddress').value;
+            const newDob = document.getElementById('editDob').value;
+            const newBio = document.getElementById('editBio').value;
+            const newPhoto = document.getElementById('newProfileImage').files[0];
+
+            const userRef = doc(firestore, 'users', user.uid);
+            const updateData = {
+                name: newName,
+                address: newAddress,
+                dob: newDob,
+                bio: newBio
+            };
+
+            try {
+                if (newPhoto) {
+                    const storageRef = ref(storage, `profilePhotos/${user.uid}/${newPhoto.name}`);
+                    await uploadBytes(storageRef, newPhoto);
+                    const photoURL = await getDownloadURL(storageRef);
+                    updateData.photoURL = photoURL;
+                }
+
+                await updateDoc(userRef, updateData);
+                alert("Profile updated successfully.");
+                fetchUserData(user.uid); // Refresh profile data
+
+                // Hide the edit form and show the profile again
+                document.querySelector('.profile-header').style.display = 'block';
+                document.getElementById('editProfileSection').style.display = 'none';
+            } catch (error) {
+                alert("Error updating profile: " + error.message);
+            }
+        });
+    </script>
+</body>
+</html>
