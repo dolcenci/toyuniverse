@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Songs</title>
+    <title>Add Product</title>
     <style>
         body {
             display: flex;
@@ -100,25 +100,25 @@
 </head>
 <body>
     <div class="container">
-        <h1>Upload Songs</h1>
+        <h1>Add Product</h1>
         <div class="error-message" id="errorMessage" style="display: none;"></div>
         <div class="form-group">
             <input type="text" id="email" placeholder="Email" required>
             <input type="password" id="password" placeholder="Password" required>
-            <input type="text" id="songTitle" placeholder="Song Title" required>
+            <input type="text" id="songTitle" placeholder="product Name" required>
             <input type="text" id="artistName" placeholder="Artist Name" required>
-            <textarea id="description" placeholder="Song Description" rows="3" required></textarea>
+            <textarea id="description" placeholder="Product Description" rows="3" required></textarea>
             <input type="file" id="audioUpload" accept="audio/*" required>
             <input type="file" id="coverUpload" accept="image/*" required>
-            <textarea id="lyrics" placeholder="Type lyrics here..." rows="5"></textarea>
-            <input type="file" id="lyricsUpload" accept=".txt" placeholder="Upload Lyrics File (txt format)">
-            <button class="upload-button" id="uploadButton">Upload Song</button>
-            <li><a class="download-linkpurple" href="songplayer.html">Music Player</a></li>
-            <li><a class="download-linkpurple" href="index.html">Index</a></li>
+            <textarea id="lyrics" placeholder="Type lyrics here...(blank" rows="5"></textarea>
+            <input type="file" id="lyricsUpload" accept=".txt" placeholder="Upload Lyrics File (blank)">
+            <button class="upload-button" id="uploadButton">Add Product</button>
+            <li><a class="download-linkpurple" href="songplayer.html">product Player</a></li>
+            <li><a class="download-linkpurple" href="index.html">Home</a></li>
         </div>
 
         <div class="song-list" id="songList">
-            <h2>Uploaded Songs</h2>
+            <h2>Uploaded Products</h2>
             <!-- Uploaded songs will be displayed here -->
         </div>
     </div>
